@@ -26,16 +26,16 @@
 
   export default function Admin() {
 
-    const { isAuthenticated, isLoading } = useKindeBrowserClient()
-        
+    // const { isAuthenticated, isLoading } = useKindeBrowserClient()
+
     const [file, setFile] = useState<File | null>(null)
     const [uploading, setUploading] = useState(false)
     const [imageUrls, setImageUrls] = useState<string[]>([])
-    const [name, setName] = useState('') 
-    const [description, setDescription] = useState('') 
+    const [name, setName] = useState('')
+    const [description, setDescription] = useState('')
     const [tags, setTags] = useState('')
-    
-    if (isLoading) return <div>Loading...</div>
+
+    // if (isLoading) return <div>Loading...</div>
 
     const fetchImages = async () => {
       try {
@@ -44,25 +44,26 @@
           headers: {
             'Content-Type': 'application/json',
           },
-        }) 
-  
+        })
+        console.log('response', response)
+
         if (response.ok) {
           const responseData = await response.json()
-          
+
           if (responseData && responseData.result && Array.isArray(responseData.result) && responseData.result.length > 0) {
-            const imageUrlArray = responseData.result.map(item => item.fileUrl) 
-            setImageUrls(imageUrlArray) 
+            const imageUrlArray = responseData.result.map(item => item.fileUrl)
+            setImageUrls(imageUrlArray)
           } else {
             console.error('Invalid response data format')
           }
         } else {
-          console.error('Failed to fetch image URL') 
+          console.error('Failed to fetch image URL')
         }
       } catch (error) {
         console.error('Error fetching image URL:', error)
       }
-    } 
-    
+    }
+
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.files) {
@@ -79,7 +80,7 @@
         return
       }
       setUploading(true)
-    
+
       const response = await fetch(
         '/api/upload',
         {
@@ -90,7 +91,7 @@
           body: JSON.stringify({ filename: file.name, contentType: file.type, name, description, tags }),
         }
       )
-    
+
       if (response.ok) {
         const { url } = await response.json()
         console.log('Got pre-signed URL:', url)
@@ -101,7 +102,7 @@
           },
           body: file,
         })
-    
+
         if (uploadResponse.ok) {
           alert('Upload successful!')
         } else {
@@ -111,11 +112,12 @@
       } else {
         alert('Failed to get pre-signed URL.')
       }
-    
+
       setUploading(false)
     }
 
-  return isAuthenticated ? (
+  // return isAuthenticated ? (
+  return (
     <div className="min-h-screen bg-white text-black space-y-12">
       <div className="max-w-2xl mx-auto py-24 px-4">
         <h2 className="text-base font-semibold leading-7 text-black">
@@ -165,7 +167,7 @@
                     </div>
                     <div className="flex flex-col space-y-1.5">
                       <Label htmlFor="description">Description</Label>
-                      <Input id="description" placeholder="Description of the image" value={description} onChange={(e) => setDescription(e.target.value)} />  
+                      <Input id="description" placeholder="Description of the image" value={description} onChange={(e) => setDescription(e.target.value)} />
                     </div>
                     <div className="flex flex-col space-y-1.5">
                       <Label htmlFor="tags">Tags</Label>
@@ -207,9 +209,9 @@
       </div>
     </div>
   </div>
-  ) : (
-    <div>
-      Sorry, But you dont have the permissions to view this page!
-    </div>
+  // ) : (
+  //   <div>
+  //     Sorry, But you dont have the permissions to view this page!
+  //   </div>
   );
 }

@@ -1,6 +1,6 @@
-import React from 'react' 
-import Link from "next/link" 
-import { SiteHeader } from '~/components/site-header' 
+import React from 'react'
+import Link from "next/link"
+import { SiteHeader } from '~/components/site-header'
 import { db } from '~/server/db'
 import { imageData } from '~/server/db/schema'
 import { siteConfig } from '~/config/site'
@@ -13,11 +13,13 @@ export default async function Home() {
     fileUrl: imageData.fileUrl,
   }).from(imageData)
 
+  console.log(result)
+
   const imageUrls = result.map((item) => ({
     id: item.id,
     url: item.fileUrl
   }))
-  
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-white text-black">
       <SiteHeader />
@@ -49,5 +51,5 @@ export default async function Home() {
         <div className="flex flex-col items-center gap-2"></div>
       </div>
     </main>
-  ) 
+  )
 }
